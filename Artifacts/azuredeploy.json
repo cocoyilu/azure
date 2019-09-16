@@ -178,7 +178,7 @@
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
-        "type": "DSC",
+        "type": "dsc",
         "typeHandlerVersion": "2.21",
         "autoUpgradeMinorVersion": true,
         "settings": {
