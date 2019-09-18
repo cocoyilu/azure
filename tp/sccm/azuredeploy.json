@@ -30,7 +30,7 @@
       "metadata": {
         "description": "The base URI where artifacts required by this template are located including a trailing '/'"
       },
-      "defaultValue": "https://raw.githubusercontent.com/cocoyilu/azure/master/tp/"
+      "defaultValue": "https://raw.githubusercontent.com/cocoyilu/azure/master/tp/sccm/"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
