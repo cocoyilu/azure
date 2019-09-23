@@ -183,29 +183,26 @@
         "autoUpgradeMinorVersion": true,
         "forceUpdateTag": "1.0",
         "settings": {
-          "wmfVersion": "latest",
-          "configuration": {
-            "url": "[concat(parameters('_artifactsLocation'), '/dsc/DCConfigurationTP.zip', parameters('_artifactsLocationSasToken'))]",
-            "script": "[concat(variables('vmrole')[copyIndex()], 'Configuration.ps1')]",
-            "function": "Configuration"
-          },
-          "configurationArguments": {
+          "modulesUrl": "[concat(parameters('_artifactsLocation'), '/dsc/DCConfigurationTP.zip', parameters('_artifactsLocationSasToken'))]",
+          "configurationFunction": "[concat(variables('vmrole')[copyIndex()],'Configuration.ps1\\Configuration')]",
+          "Properties": {
             "DomainName": "[variables('domainName')]",
             "DCName": "[concat(parameters('prefix'),variables('vmname')[0])]",
             "DPMPName": "[concat(parameters('prefix'),variables('vmname')[1])]",
             "PSName": "[concat(parameters('prefix'),variables('vmname')[2])]",
-            "DNSIPAddress": "[concat(variables('networkSettings').virtualMachinesIPAddress,add(int('0'),int('4')))]"
-          }
-        },
-        "protectedSettings": {
-          "configurationArguments": {
+            "DNSIPAddress": "[concat(variables('networkSettings').virtualMachinesIPAddress,add(int('0'),int('4')))]",
             "AdminCreds": {
               "UserName": "[parameters('adminUsername')]",
               "Password": "PrivateSettingsRef:AdminPassword"
-
             }
           }
+        },
+        "protectedSettings": {
+          "Items": {
+            "AdminPassword": "[parameters('adminPassword')]"
+          }
         }
+      }
       },
     {
       "type": "Microsoft.Network/virtualNetworks",
