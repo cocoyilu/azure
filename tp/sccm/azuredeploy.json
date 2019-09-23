@@ -179,7 +179,7 @@
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "dsc",
-        "typeHandlerVersion": "2.9",
+        "typeHandlerVersion": "2.77",
         "autoUpgradeMinorVersion": true,
         "forceUpdateTag": "1.0",
         "settings": {
