@@ -48,9 +48,8 @@
     }
   },
   "variables": {
-    "dscScript": "dsc/DCConfigurationTP.zip",
-    "virtualNetworkName": "[concat(toLower(parameters('prefix')), '-vnet')]",
     "domainName": "contoso.com",
+    "dscScript": "dsc/DCConfigurationTP.zip",
     "networkSettings": {
       "virtualNetworkAddressPrefix": "10.0.0.0/16",
       "subnetAddressPrefix": "10.0.0.0/24",
@@ -70,35 +69,36 @@
       "sourcePortRange": "*",
       "destinationAddressPrefix": "*"
     },
-    "vmrole": [
-      "DC",
-      "DPMP",
-      "PS"
+    "virtualNetworkName": "[concat(toLower(parameters('prefix')), '-vnet')]",
+    "vmDiskType": [
+      "Premium_LRS",
+      "Premium_LRS",
+      "Premium_LRS"
     ],
     "vmname": [
       "DC01",
       "DPMP01",
       "PS01"
     ],
-    "vmDiskType": [
-      "Premium_LRS",
-      "Premium_LRS",
-      "Premium_LRS"
-    ],
-    "vmSize": [
-      "Standard_B2s",
-      "Standard_B2s",
-      "Standard_B2ms"
+    "vmoffer": [
+      "WindowsServer",
+      "WindowsServer",
+      "SQL2016SP1-WS2016"
     ],
     "vmpublisher": [
       "MicrosoftWindowsServer",
       "MicrosoftWindowsServer",
       "MicrosoftSQLServer"
     ],
-    "vmoffer": [
-      "WindowsServer",
-      "WindowsServer",
-      "SQL2016SP1-WS2016"
+    "vmrole": [
+      "DC",
+      "DPMP",
+      "PS"
+    ],
+    "vmSize": [
+      "Standard_B2s",
+      "Standard_B2s",
+      "Standard_B2ms"
     ],
     "vmsku": [
       "2019-Datacenter",
@@ -179,30 +179,34 @@
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "dsc",
-        "typeHandlerVersion": "2.21",
+        "typeHandlerVersion": "2.9",
         "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": "1.0",
         "settings": {
-          "modulesUrl": "[Uri(parameters('_artifactsLocation'),concat(variables('dscScript'),parameters('_artifactsLocationSasToken')))]",
-          "configurationFunction": "[concat(variables('vmrole')[copyIndex()],'Configuration.ps1\\Configuration')]",
-          "Properties": {
+          "wmfVersion": "latest",
+          "configuration": {
+            "url": "[concat(parameters('_artifactsLocation'), '/dsc/DCConfigurationTP.zip', parameters('_artifactsLocationSasToken'))]",
+            "script": "[concat(variables('vmrole')[copyIndex()], 'Configuration.ps1')]",
+            "function": "Configuration"
+          },
+          "configurationArguments": {
             "DomainName": "[variables('domainName')]",
             "DCName": "[concat(parameters('prefix'),variables('vmname')[0])]",
             "DPMPName": "[concat(parameters('prefix'),variables('vmname')[1])]",
             "PSName": "[concat(parameters('prefix'),variables('vmname')[2])]",
-            "DNSIPAddress": "[concat(variables('networkSettings').virtualMachinesIPAddress,add(int('0'),int('4')))]",
-            "AdminCreds": {
-              "UserName": "[parameters('adminUsername')]",
-              "Password": "PrivateSettingsRef:AdminPassword"
-            }
+            "DNSIPAddress": "[concat(variables('networkSettings').virtualMachinesIPAddress,add(int('0'),int('4')))]"
           }
         },
         "protectedSettings": {
-          "Items": {
-            "AdminPassword": "[parameters('adminPassword')]"
+          "configurationArguments": {
+            "AdminCreds": {
+              "UserName": "[parameters('adminUsername')]",
+              "Password": "PrivateSettingsRef:AdminPassword"
+
+            }
           }
         }
-      }
-    },
+      },
     {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2018-08-01",
